@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">PokedexChallenge</string>
+    <string name="login_email_placeholder">Email</string>
+    <string name="login_password_placeholder">Password</string>
+    <string name="login_terms_description">Accept terms</string>
+    <string name="login_button_submit">Login</string>
+    <string name="pokemon_list_tab_pokedex">Pokédex</string>
+    <string name="pokemon_list_tab_favorites">Favorites</string>
+    <string name="pokemon_list_main_empty">Loading elements into the list...</string>
+    <string name="pokemon_list_favorites_empty">You can choose pokemon as favorites on their details page!</string>
+    <string name="pokemon_details_hp">HP</string>
+    <string name="pokemon_details_atk">Attack</string>
+    <string name="pokemon_details_def">Defense</string>
+    <string name="pokemon_details_spatk">Sp. Atk</string>
+    <string name="pokemon_details_spdef">Sp. Def</string>
+    <string name="pokemon_details_speed">Speed</string>
+    <string name="toast_logout_successful">Logout Successful</string>
+    <string name="toast_login_successful">Login Successful</string>
+    <string name="error_unknown">An unknown error occurred</string>
+</resources>

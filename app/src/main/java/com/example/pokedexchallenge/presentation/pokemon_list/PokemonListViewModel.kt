@@ -1,0 +1,152 @@
+package com.example.pokedexchallenge.presentation.pokemon_list
+
+import android.app.Application
+import android.content.SharedPreferences
+import android.widget.Toast
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.pokedexchallenge.R
+import com.example.pokedexchallenge.commons.Constants.SHARED_PREF_IS_LOGGED_IN
+import com.example.pokedexchallenge.commons.Resource
+import com.example.pokedexchallenge.domain.model.Entry
+import com.example.pokedexchallenge.domain.use_case.pokemon_list.PokemonListUseCases
+import dagger.hilt.android.lifecycle.HiltViewModel
+import es.dmoral.toasty.Toasty
+import kotlinx.coroutines.launch
+import javax.inject.Inject
+
+@HiltViewModel
+class PokemonListViewModel @Inject constructor(
+    private val app: Application,
+    private val useCases: PokemonListUseCases,
+    private val preferences: SharedPreferences
+) : ViewModel() {
+
+    var state by mutableStateOf(PokemonListState())
+        private set
+
+    init {
+        fetchTypesList()
+    }
+
+    fun onEvent(event: PokemonListEvent) {
+        when (event) {
+            is PokemonListEvent.OnFirstVisibleListIndex -> {
+                val lastIndex = state.entries.last().id
+                if (lastIndex == 904) return
+                if (!state.isRefreshing && event.index == lastIndex - 10) {
+                    state = state.copy(isRefreshing = true)
+                    fetchEntryList(offset = lastIndex / 20)
+                }
+            }
+            is PokemonListEvent.RefreshFavorites -> {
+                if (state.types.isNotEmpty()) {
+                    fetchFavoritesEntryList()
+                }
+            }
+            is PokemonListEvent.Logout -> {
+                viewModelScope.launch {
+                    preferences.edit().putBoolean(SHARED_PREF_IS_LOGGED_IN, false).apply()
+                }
+                Toasty.info(
+                    app,
+                    app.getString(R.string.toast_logout_successful),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+    }
+
+    private fun fetchTypesList() {
+        viewModelScope.launch {
+            useCases
+                .fetchTypesList()
+                .collect { result ->
+                    when (result) {
+                        is Resource.Success -> {
+                            result.data?.let { types ->
+                                state = state.copy(types = types)
+                                fetchEntryList()
+                                fetchFavoritesEntryList()
+                            }
+                        }
+                        is Resource.Error -> {
+                            Toasty.error(
+                                app,
+                                app.getString(R.string.error_unknown),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                        is Resource.Loading -> {
+                            state = state.copy(isLoading = result.isLoading)
+                        }
+                    }
+                }
+        }
+    }
+
+    private fun fetchEntryList(offset: Int = 0) {
+        viewModelScope.launch {
+            if (offset == 0) {
+                useCases
+                    .fetchLocalEntryList(state.types)
+                    .collect { result -> collectEntryListResult(result) }
+            } else {
+                useCases
+                    .fetchRemoteEntryList(offset, state.types)
+                    .collect { result -> collectEntryListResult(result) }
+            }
+        }
+    }
+
+    private fun collectEntryListResult(result: Resource<List<Entry>>) {
+        when (result) {
+            is Resource.Success -> {
+                result.data?.let { entries ->
+                    state = state.copy(entries = entries, isRefreshing = false)
+                }
+            }
+            is Resource.Error -> {
+                Toasty.error(
+                    app,
+                    app.getString(R.string.error_unknown),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+            is Resource.Loading -> {
+                state = state.copy(isRefreshing = result.isLoading)
+            }
+        }
+    }
+
+    private fun fetchFavoritesEntryList() {
+        viewModelScope.launch {
+            useCases
+                .fetchFavoritesEntryList()
+                .collect { result -> collectFavoritesEntryListResult(result) }
+        }
+    }
+
+    private fun collectFavoritesEntryListResult(result: Resource<List<Entry>>) {
+        when (result) {
+            is Resource.Success -> {
+                result.data?.let { favorites ->
+                    state = state.copy(favoriteEntries = favorites)
+                }
+            }
+            is Resource.Error -> {
+                Toasty.error(
+                    app,
+                    app.getString(R.string.error_unknown),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+            is Resource.Loading -> {
+                state = state.copy(isRefreshing = result.isLoading)
+            }
+        }
+    }
+}
