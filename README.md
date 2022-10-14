@@ -10,7 +10,9 @@ This project was developed for showing data retrieved from [PokéAPI](https://po
    2. List of those selected as favorites
 3. Details Screen with pokémon base stats, number and types
 
-![ChallengeGif](https://raw.githubusercontent.com/ramruizni/PokedexChallenge/master/PokedexChallenge.gif)
+<p align="center">
+  <img src="https://raw.githubusercontent.com/ramruizni/PokedexChallenge/master/PokedexChallenge.gif" />
+</p>
 
 ## Nice to haves implemented:
 
