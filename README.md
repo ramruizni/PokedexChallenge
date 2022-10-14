@@ -19,3 +19,9 @@ This project was developed for showing data retrieved from [PokéAPI](https://po
 1. Clean Architecture
 2. Basic Unit Tests for the Use Cases
 3. Dummy screen of favorites
+
+## To run the project:
+
+Clone the repository and build it in Android Studio.
+
+For convenience, an **app-release.apk** is stored in the root folder.
