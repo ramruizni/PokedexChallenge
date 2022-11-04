@@ -1,28 +1,23 @@
 package com.example.pokedexchallenge.presentation.pokemon_list
 
-import android.app.Application
-import android.content.SharedPreferences
-import android.widget.Toast
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.pokedexchallenge.R
-import com.example.pokedexchallenge.commons.Constants.SHARED_PREF_IS_LOGGED_IN
 import com.example.pokedexchallenge.commons.Resource
 import com.example.pokedexchallenge.domain.model.Entry
 import com.example.pokedexchallenge.domain.use_case.pokemon_list.PokemonListUseCases
+import com.example.pokedexchallenge.testability.DispatcherProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
-import es.dmoral.toasty.Toasty
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class PokemonListViewModel @Inject constructor(
-    private val app: Application,
+    private val dispatchers: DispatcherProvider,
     private val useCases: PokemonListUseCases,
-    private val preferences: SharedPreferences
+    // private val preferences: SharedPreferences
 ) : ViewModel() {
 
     var state by mutableStateOf(PokemonListState())
@@ -48,20 +43,16 @@ class PokemonListViewModel @Inject constructor(
                 }
             }
             is PokemonListEvent.Logout -> {
-                viewModelScope.launch {
+                /*viewModelScope.launch {
                     preferences.edit().putBoolean(SHARED_PREF_IS_LOGGED_IN, false).apply()
-                }
-                Toasty.info(
-                    app,
-                    app.getString(R.string.toast_logout_successful),
-                    Toast.LENGTH_SHORT
-                ).show()
+                }*/
+                // TODO: Toast toast_logout_successful
             }
         }
     }
 
     private fun fetchTypesList() {
-        viewModelScope.launch {
+        viewModelScope.launch(dispatchers.main) {
             useCases
                 .fetchTypesList()
                 .collect { result ->
@@ -74,11 +65,7 @@ class PokemonListViewModel @Inject constructor(
                             }
                         }
                         is Resource.Error -> {
-                            Toasty.error(
-                                app,
-                                app.getString(R.string.error_unknown),
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            // TODO: Toast error_unknown
                         }
                         is Resource.Loading -> {
                             state = state.copy(isLoading = result.isLoading)
@@ -89,7 +76,7 @@ class PokemonListViewModel @Inject constructor(
     }
 
     private fun fetchEntryList(offset: Int = 0) {
-        viewModelScope.launch {
+        viewModelScope.launch(dispatchers.main) {
             if (offset == 0) {
                 useCases
                     .fetchLocalEntryList(state.types)
@@ -110,11 +97,7 @@ class PokemonListViewModel @Inject constructor(
                 }
             }
             is Resource.Error -> {
-                Toasty.error(
-                    app,
-                    app.getString(R.string.error_unknown),
-                    Toast.LENGTH_SHORT
-                ).show()
+                // TODO: Toast error_unknown
             }
             is Resource.Loading -> {
                 state = state.copy(isRefreshing = result.isLoading)
@@ -123,7 +106,7 @@ class PokemonListViewModel @Inject constructor(
     }
 
     private fun fetchFavoritesEntryList() {
-        viewModelScope.launch {
+        viewModelScope.launch(dispatchers.main) {
             useCases
                 .fetchFavoritesEntryList()
                 .collect { result -> collectFavoritesEntryListResult(result) }
@@ -138,11 +121,7 @@ class PokemonListViewModel @Inject constructor(
                 }
             }
             is Resource.Error -> {
-                Toasty.error(
-                    app,
-                    app.getString(R.string.error_unknown),
-                    Toast.LENGTH_SHORT
-                ).show()
+                // TODO: Toast error_unknown
             }
             is Resource.Loading -> {
                 state = state.copy(isRefreshing = result.isLoading)

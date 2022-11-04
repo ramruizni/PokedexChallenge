@@ -9,13 +9,11 @@ import com.example.pokedexchallenge.data.remote.api.EntryApi
 import com.example.pokedexchallenge.domain.model.Entry
 import com.example.pokedexchallenge.domain.model.Types
 import com.example.pokedexchallenge.domain.repository.EntryRepository
-import com.example.pokedexchallenge.testability.DispatcherProvider
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class EntryRepositoryImpl @Inject constructor(
-    private val dispatchers: DispatcherProvider,
     private val api: EntryApi,
     private val dao: EntryDao
 ) : EntryRepository {

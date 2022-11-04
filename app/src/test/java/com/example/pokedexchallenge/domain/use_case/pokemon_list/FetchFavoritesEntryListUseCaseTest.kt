@@ -4,23 +4,23 @@ import app.cash.turbine.test
 import com.example.pokedexchallenge.commons.Resource
 import com.example.pokedexchallenge.domain.repository.EntryRepository
 import com.example.pokedexchallenge.domain.repository.TestEntryRepository
-import com.example.pokedexchallenge.testability.TestDispatchers
+import com.example.pokedexchallenge.testability.TestDispatcherRule
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 
 class FetchFavoritesEntryListUseCaseTest {
-
     private lateinit var fetchFavoritesEntryList: FetchFavoritesEntryListUseCase
-    private lateinit var testDispatchers: TestDispatchers
     private lateinit var testEntryRepository: EntryRepository
+
+    @get:Rule
+    val dispatcherRule = TestDispatcherRule()
 
     @Before
     fun setUp() {
-        testDispatchers = TestDispatchers()
         testEntryRepository = TestEntryRepository()
         fetchFavoritesEntryList = FetchFavoritesEntryListUseCase(
-            dispatchers = testDispatchers,
             entryRepository = testEntryRepository
         )
     }

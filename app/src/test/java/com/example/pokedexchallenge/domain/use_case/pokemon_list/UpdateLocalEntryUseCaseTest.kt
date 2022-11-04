@@ -5,23 +5,23 @@ import com.example.pokedexchallenge.commons.Resource
 import com.example.pokedexchallenge.domain.model.Entry
 import com.example.pokedexchallenge.domain.repository.EntryRepository
 import com.example.pokedexchallenge.domain.repository.TestEntryRepository
-import com.example.pokedexchallenge.testability.TestDispatchers
+import com.example.pokedexchallenge.testability.TestDispatcherRule
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 
 class UpdateLocalEntryUseCaseTest {
-
-    private lateinit var updateLocalEntryUseCase: UpdateLocalEntryUseCase
-    private lateinit var testDispatchers: TestDispatchers
+    private lateinit var updateLocalEntry: UpdateLocalEntryUseCase
     private lateinit var testEntryRepository: EntryRepository
+
+    @get:Rule
+    val dispatcherRule = TestDispatcherRule()
 
     @Before
     fun setUp() {
-        testDispatchers = TestDispatchers()
         testEntryRepository = TestEntryRepository()
-        updateLocalEntryUseCase = UpdateLocalEntryUseCase(
-            dispatchers = testDispatchers,
+        updateLocalEntry = UpdateLocalEntryUseCase(
             entryRepository = testEntryRepository
         )
     }
@@ -35,7 +35,7 @@ class UpdateLocalEntryUseCaseTest {
             typeName1 = "Grass",
             typeName2 = "Poison"
         )
-        updateLocalEntryUseCase(entry = entry).test {
+        updateLocalEntry(entry = entry).test {
             assert(awaitItem() is Resource.Loading)
             assert(awaitItem() is Resource.Success)
             assert(awaitItem() is Resource.Loading)

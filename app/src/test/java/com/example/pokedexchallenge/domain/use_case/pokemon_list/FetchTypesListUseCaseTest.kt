@@ -4,30 +4,30 @@ import app.cash.turbine.test
 import com.example.pokedexchallenge.commons.Resource
 import com.example.pokedexchallenge.domain.repository.TestTypesRepository
 import com.example.pokedexchallenge.domain.repository.TypesRepository
-import com.example.pokedexchallenge.testability.TestDispatchers
+import com.example.pokedexchallenge.testability.TestDispatcherRule
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 
 class FetchTypesListUseCaseTest {
-
-    private lateinit var fetchTypesListUseCase: FetchTypesListUseCase
-    private lateinit var testDispatchers: TestDispatchers
+    private lateinit var fetchTypesList: FetchTypesListUseCase
     private lateinit var testTypesRepository: TypesRepository
+
+    @get:Rule
+    val dispatcherRule = TestDispatcherRule()
 
     @Before
     fun setUp() {
-        testDispatchers = TestDispatchers()
         testTypesRepository = TestTypesRepository()
-        fetchTypesListUseCase = FetchTypesListUseCase(
-            dispatchers = testDispatchers,
+        fetchTypesList = FetchTypesListUseCase(
             typesRepository = testTypesRepository
         )
     }
 
     @Test
     fun `Emits loading event on start and on finish`() = runBlocking {
-        fetchTypesListUseCase().test {
+        fetchTypesList().test {
             assert(awaitItem() is Resource.Loading)
             assert(awaitItem() is Resource.Success)
             assert(awaitItem() is Resource.Loading)

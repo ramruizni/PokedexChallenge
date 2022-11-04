@@ -11,8 +11,8 @@ fun String.getPokemonIdFromUrl(): Int {
 }
 
 fun String.formatAsEntryNumber(): String {
-    return when(this.length) {
-        1-> "#00$this"
+    return when (this.length) {
+        1 -> "#00$this"
         2 -> "#0$this"
         else -> "#$this"
     }

@@ -4,23 +4,24 @@ import app.cash.turbine.test
 import com.example.pokedexchallenge.commons.Resource
 import com.example.pokedexchallenge.domain.repository.DetailsRepository
 import com.example.pokedexchallenge.domain.repository.TestDetailsRepository
-import com.example.pokedexchallenge.testability.TestDispatchers
+import com.example.pokedexchallenge.testability.TestDispatcherRule
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 
 class FetchDetailsByIdUseCaseTest {
 
     private lateinit var fetchDetailsById: FetchDetailsByIdUseCase
-    private lateinit var testDispatchers: TestDispatchers
     private lateinit var testDetailsRepository: DetailsRepository
+
+    @get:Rule
+    val dispatcherRule = TestDispatcherRule()
 
     @Before
     fun setUp() {
-        testDispatchers = TestDispatchers()
         testDetailsRepository = TestDetailsRepository()
         fetchDetailsById = FetchDetailsByIdUseCase(
-            dispatchers = testDispatchers,
             detailsRepository = testDetailsRepository
         )
     }
