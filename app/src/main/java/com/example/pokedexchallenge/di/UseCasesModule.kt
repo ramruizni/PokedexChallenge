@@ -10,6 +10,7 @@ import com.example.pokedexchallenge.domain.use_case.login.ValidateTermsUseCase
 import com.example.pokedexchallenge.domain.use_case.pokemon_details.FetchDetailsByIdUseCase
 import com.example.pokedexchallenge.domain.use_case.pokemon_details.PokemonDetailsUseCases
 import com.example.pokedexchallenge.domain.use_case.pokemon_list.*
+import com.example.pokedexchallenge.testability.DispatcherProvider
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -33,29 +34,31 @@ object UseCasesModule {
     @Provides
     @Singleton
     fun providePokemonListUseCases(
+        dispatchers: DispatcherProvider,
         typesRepository: TypesRepository,
         entryRepository: EntryRepository,
     ): PokemonListUseCases {
         return PokemonListUseCases(
-            FetchTypesListUseCase(typesRepository),
-            FetchLocalEntryListUseCase(entryRepository),
-            FetchRemoteEntryListUseCase(entryRepository),
-            FetchLocalEntryUseCase(entryRepository),
-            UpdateLocalEntryUseCase(entryRepository),
-            FetchFavoritesEntryListUseCase(entryRepository)
+            FetchTypesListUseCase(dispatchers, typesRepository),
+            FetchLocalEntryListUseCase(dispatchers, entryRepository),
+            FetchRemoteEntryListUseCase(dispatchers, entryRepository),
+            FetchLocalEntryUseCase(dispatchers, entryRepository),
+            UpdateLocalEntryUseCase(dispatchers, entryRepository),
+            FetchFavoritesEntryListUseCase(dispatchers, entryRepository)
         )
     }
 
     @Provides
     @Singleton
     fun providePokemonDetailsUseCases(
+        dispatchers: DispatcherProvider,
         detailsRepository: DetailsRepository,
         entryRepository: EntryRepository,
     ): PokemonDetailsUseCases {
         return PokemonDetailsUseCases(
             FetchDetailsByIdUseCase(detailsRepository),
-            FetchLocalEntryUseCase(entryRepository),
-            UpdateLocalEntryUseCase(entryRepository)
+            FetchLocalEntryUseCase(dispatchers, entryRepository),
+            UpdateLocalEntryUseCase(dispatchers, entryRepository)
         )
     }
 }

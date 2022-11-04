@@ -4,13 +4,16 @@ import app.cash.turbine.test
 import com.example.pokedexchallenge.commons.Resource
 import com.example.pokedexchallenge.domain.repository.TestTypesRepository
 import com.example.pokedexchallenge.domain.repository.TypesRepository
+import com.example.pokedexchallenge.testability.DispatcherProvider
 import com.example.pokedexchallenge.testability.TestDispatcherRule
+import com.example.pokedexchallenge.testability.TestDispatchers
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
 class FetchTypesListUseCaseTest {
+    private lateinit var dispatchers: DispatcherProvider
     private lateinit var fetchTypesList: FetchTypesListUseCase
     private lateinit var testTypesRepository: TypesRepository
 
@@ -19,8 +22,10 @@ class FetchTypesListUseCaseTest {
 
     @Before
     fun setUp() {
+        dispatchers = TestDispatchers()
         testTypesRepository = TestTypesRepository()
         fetchTypesList = FetchTypesListUseCase(
+            dispatchers = dispatchers,
             typesRepository = testTypesRepository
         )
     }

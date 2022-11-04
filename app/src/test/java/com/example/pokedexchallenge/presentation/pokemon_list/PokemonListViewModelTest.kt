@@ -25,12 +25,12 @@ class PokemonListViewModelTest {
         typesRepository = TestTypesRepository()
         entryRepository = TestEntryRepository()
         useCases = PokemonListUseCases(
-            FetchTypesListUseCase(typesRepository),
-            FetchLocalEntryListUseCase(entryRepository),
-            FetchRemoteEntryListUseCase(entryRepository),
-            FetchLocalEntryUseCase(entryRepository),
-            UpdateLocalEntryUseCase(entryRepository),
-            FetchFavoritesEntryListUseCase(entryRepository)
+            FetchTypesListUseCase(dispatchers, typesRepository),
+            FetchLocalEntryListUseCase(dispatchers, entryRepository),
+            FetchRemoteEntryListUseCase(dispatchers, entryRepository),
+            FetchLocalEntryUseCase(dispatchers, entryRepository),
+            UpdateLocalEntryUseCase(dispatchers, entryRepository),
+            FetchFavoritesEntryListUseCase(dispatchers, entryRepository)
         )
 
         viewModel = PokemonListViewModel(

@@ -6,7 +6,7 @@ import com.example.pokedexchallenge.commons.UiText
 import com.example.pokedexchallenge.domain.model.Entry
 import com.example.pokedexchallenge.domain.model.Types
 import com.example.pokedexchallenge.domain.repository.EntryRepository
-import kotlinx.coroutines.Dispatchers
+import com.example.pokedexchallenge.testability.DispatcherProvider
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
@@ -15,6 +15,7 @@ import javax.inject.Inject
 
 
 class FetchLocalEntryListUseCase @Inject constructor(
+    private var dispatchers: DispatcherProvider,
     private val entryRepository: EntryRepository,
 ) {
 
@@ -39,7 +40,7 @@ class FetchLocalEntryListUseCase @Inject constructor(
             emit(Resource.Loading(false))
         }.catch {
             emit(Resource.Error(UiText.StringResource(R.string.error_unknown)))
-        }.flowOn(Dispatchers.IO)
+        }.flowOn(dispatchers.io)
     }
 
 }
