@@ -1,20 +1,15 @@
-package com.example.pokedexchallenge.testability
+package com.example.pokedexchallenge.testability.rule
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.*
-import org.junit.rules.TestRule
 import org.junit.rules.TestWatcher
 import org.junit.runner.Description
 
-/**
- * A [TestRule] that initializes the main dispatcher to [dispatcher], which defaults to a
- * [StandardTestDispatcher].
- */
 @OptIn(ExperimentalCoroutinesApi::class)
-class TestDispatcherRule(
-    private val dispatcher: CoroutineDispatcher = StandardTestDispatcher()
+class StandardDispatcherRule(
+    val dispatcher: TestDispatcher = StandardTestDispatcher()
 ) : TestWatcher() {
     override fun starting(description: Description) {
         super.starting(description)

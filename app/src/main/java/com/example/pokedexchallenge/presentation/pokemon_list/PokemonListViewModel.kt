@@ -8,14 +8,12 @@ import androidx.lifecycle.viewModelScope
 import com.example.pokedexchallenge.commons.Resource
 import com.example.pokedexchallenge.domain.model.Entry
 import com.example.pokedexchallenge.domain.use_case.pokemon_list.PokemonListUseCases
-import com.example.pokedexchallenge.testability.DispatcherProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class PokemonListViewModel @Inject constructor(
-    private val dispatchers: DispatcherProvider,
     private val useCases: PokemonListUseCases,
     // private val preferences: SharedPreferences
 ) : ViewModel() {
@@ -52,7 +50,7 @@ class PokemonListViewModel @Inject constructor(
     }
 
     private fun fetchTypesList() {
-        viewModelScope.launch(dispatchers.main) {
+        viewModelScope.launch {
             useCases
                 .fetchTypesList()
                 .collect { result ->
@@ -76,7 +74,7 @@ class PokemonListViewModel @Inject constructor(
     }
 
     private fun fetchEntryList(offset: Int = 0) {
-        viewModelScope.launch(dispatchers.main) {
+        viewModelScope.launch {
             if (offset == 0) {
                 useCases
                     .fetchLocalEntryList(state.types)
@@ -106,7 +104,7 @@ class PokemonListViewModel @Inject constructor(
     }
 
     private fun fetchFavoritesEntryList() {
-        viewModelScope.launch(dispatchers.main) {
+        viewModelScope.launch {
             useCases
                 .fetchFavoritesEntryList()
                 .collect { result -> collectFavoritesEntryListResult(result) }
